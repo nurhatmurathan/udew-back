@@ -2,6 +2,10 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
+class GPTChatSerializer(serializers.Serializer):
+    message = serializers.CharField(allow_null=False)
+
+
 class UserPostSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -12,3 +16,4 @@ class UserPostSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+
