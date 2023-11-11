@@ -21,13 +21,17 @@ class GPTChatAPIView(APIView):
 
             user_message = serializer.data.get('message')
 
+            prompt = "Give me an answer only on a scale of 10, like {'score': '4'}. " \
+                     "Help me evaluate the answer to the question “At what stage is your startup currently at ?”. " \
+                     "Answer: "
+
             response = client.chat.completions.create(
                 model='gpt-3.5-turbo',
                 messages=[
-                        {"role": "system", "content": "You are a helpful assistant."},
-                        {"role": "user", "content": user_message}
-                    ]
-                )
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": prompt + user_message}
+                ]
+            )
 
             response_message = response.choices[0].message.content
             return Response(response_message, status=status.HTTP_200_OK)
@@ -38,5 +42,3 @@ class GPTChatAPIView(APIView):
 class UserCreateCreateAPIView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserPostSerializer
-
-
