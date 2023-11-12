@@ -3,8 +3,8 @@ from rest_framework import serializers
 
 
 class GPTChatSerializer(serializers.Serializer):
-    question = serializers.CharField(allow_null=False, min_length=10)
-    answer = serializers.CharField(allow_null=False, min_length=2)
+    question = serializers.CharField(allow_null=False)
+    answer = serializers.CharField(allow_null=False)
 
 
 class UserPostSerializer(serializers.ModelSerializer):
