@@ -17,7 +17,6 @@ import openai
 load_dotenv(".env")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # Quick-start development settings - unsuitable for production
