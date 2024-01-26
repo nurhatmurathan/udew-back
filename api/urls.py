@@ -1,11 +1,9 @@
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-from django.urls import path, include
-from api.views.gpt import *
+from django.urls import include, path
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView)
 
-from api.views.gpt import GPTChatAPIView
+from api.views.auth import *
+from api.views.gpt import *
 
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
@@ -15,5 +13,6 @@ urlpatterns = [
     path('gpt-chat/', GPTChatAPIView.as_view()),
 
     path('register/', UserCreateCreateAPIView.as_view()),
+    path('profile/', UserProfileUpdateAPIView.as_view()),
 
 ]
