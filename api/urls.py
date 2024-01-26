@@ -22,4 +22,5 @@ urlpatterns = [
     path("register/", UserCreateAPIView.as_view()),
     path("profile/", UserProfileUpdateAPIView.as_view()),
     path("profile/password/", UserPasswordEditAPIView.as_view()),
+]
 
