@@ -1,6 +1,6 @@
 import uuid
 
-
+from django.template.loader import render_to_string
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -47,6 +47,7 @@ class SendEmailAPIView(APIView):
             return profile.confirmation_token
 
         if profile.confirmation_token:
+            print("Here")
             profile.confirmation_token.delete()
 
         token = self._generate_unique_token()
@@ -63,14 +64,16 @@ class SendEmailAPIView(APIView):
         return Token.objects.create(token=token)
 
     def _send_confirmation_email(self, email, uid, token):
-        confirm_link = f'http://127.0.0.1:8000/confirm-email/?uid={uid}&token={token}'
+        confirm_link = f'{settings.EMAIL_CONFIRMATION_REDIRECT_URL}/?uid={uid}&token={token}'
+        email_content = render_to_string('confirmation_email.html', {'confirm_link': confirm_link})
 
         send_mail(
             'Confirm Your Account',
-            f'Please click the following link to confirm your account: {confirm_link}',
+            '',
             settings.EMAIL_HOST_USER,
             [email],
             fail_silently=False,
+            html_message=email_content
         )
 
 
