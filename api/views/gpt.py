@@ -1,13 +1,10 @@
 import openai
 import requests
-from django.contrib.auth.models import User
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework import generics
 
-from api.serializers.gpt import UserPostSerializer
 from api.serializers.gpt import GPTChatSerializer
 
 client = openai.OpenAI()
@@ -64,8 +61,3 @@ class GPTChatAPIView(APIView):
 
     def _get_request_data(self):
         return self.request.data
-
-
-class UserCreateCreateAPIView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserPostSerializer
