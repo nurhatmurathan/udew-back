@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 
-from api.serializers import UserPostSerializer
-from .serializers import GPTChatSerializer
+from api.serializers.gpt import UserPostSerializer
+from api.serializers.gpt import GPTChatSerializer
 
 client = openai.OpenAI()
 

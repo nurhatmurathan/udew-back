@@ -2,11 +2,10 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from django.contrib import admin
 from django.urls import path, include
-from .views import *
+from api.views.gpt import *
 
-from .views import GPTChatAPIView
+from api.views.gpt import GPTChatAPIView
 
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
