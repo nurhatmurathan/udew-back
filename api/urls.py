@@ -7,7 +7,8 @@ from api.views.gpt import *
 from api.views.gpt import GPTChatAPIView
 from api.views.auth import (
     UserCreateAPIView,
-    EmailAPIView
+    SendEmailAPIView,
+    ConfirmEmailAPIView
 )
 
 urlpatterns = [
@@ -17,7 +18,8 @@ urlpatterns = [
     path('login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('gpt-chat/', GPTChatAPIView.as_view()),
 
-    path('pre-confirmation/', EmailAPIView.as_view()),
+    path('pre-email-confirmation/', SendEmailAPIView.as_view()),
+    path('confirm-email/', ConfirmEmailAPIView.as_view()),
 
     path("register/", UserCreateAPIView.as_view()),
     path("profile/", UserProfileUpdateAPIView.as_view()),

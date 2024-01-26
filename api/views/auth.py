@@ -1,22 +1,25 @@
 import uuid
 
-from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.exceptions import NotFound, ValidationError
 
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils import timezone
+
 from api.serializers.auth import UserCreateSerializer, UserSerializer, UserPasswordEditSerializer
 from api.models import Profile, Token
 
-class EmailAPIView(APIView):
+
+class SendEmailAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -60,7 +63,7 @@ class EmailAPIView(APIView):
         return Token.objects.create(token=token)
 
     def _send_confirmation_email(self, email, uid, token):
-        confirm_link = f'http://http://127.0.0.1:8000/confirm-email/?uid={uid}&token={token}'
+        confirm_link = f'http://127.0.0.1:8000/confirm-email/?uid={uid}&token={token}'
 
         send_mail(
             'Confirm Your Account',
@@ -69,6 +72,60 @@ class EmailAPIView(APIView):
             [email],
             fail_silently=False,
         )
+
+
+class ConfirmEmailAPIView(APIView):
+    def get(self, request):
+        try:
+            uid, token = self._get_uid_and_token_from_query_params(request)
+
+            uid = urlsafe_base64_decode(uid).decode()
+            profile = self._get_user_profile(uid)
+
+            self._check_token_validation(profile, token)
+            self._update_profile_confirmation(profile)
+
+            return Response({'message': 'Email successfully confirmed.'}, status=status.HTTP_200_OK)
+        except Exception as exception:
+            return Response({'message': str(exception)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def _get_uid_and_token_from_query_params(self, request):
+        uid = request.query_params.get('uid', '')
+        token = request.query_params.get('token', '')
+
+        if not uid or not token:
+            raise ValueError('uid and token are required in query parameters.')
+
+        return uid, token
+
+    def _get_user_profile(self, uid):
+        try:
+            user = User.objects.get(id=uid)
+            return Profile.objects.get(user_id=user.id)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            raise NotFound("User not found. Invalid token or user ID.")
+
+    def _check_token_validation(self, profile, str_token):
+        try:
+            token = Token.objects.get(token=str_token)
+
+            if not profile.confirmation_token:
+                raise NotFound("User didn't generate token.")
+
+            if token.is_expired():
+                raise ValidationError("Token is expired.")
+
+            print(profile.confirmation_token.token)
+            if profile.confirmation_token.token != token.token:
+                raise ValidationError("Your token doesn't match the user's token.")
+
+        except Token.DoesNotExist:
+            raise NotFound("Token not found.")
+
+    def _update_profile_confirmation(self, profile):
+        profile.is_email_confirmed = True
+        profile.email_confirm_date = timezone.now()
+        profile.save()
 
 
 class UserCreateAPIView(CreateAPIView):
