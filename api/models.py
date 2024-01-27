@@ -37,6 +37,7 @@ class Profile(models.Model):
     is_email_confirmed = models.BooleanField(default=False)
     email_confirm_date = models.DateTimeField(null=True, blank=True)
     confirmation_token = models.OneToOneField(Token, null=True, blank=True, on_delete=models.SET_NULL)
+    chat_thread_id = models.CharField(null=True)
 
 
 class MultilingualText(models.Model):
@@ -50,6 +51,15 @@ class ImageUrls(models.Model):
     pc = models.URLField(max_length=200)
     tablet = models.URLField(max_length=200)
     mobile = models.URLField(max_length=200)
+
+
+class ApplicationCompensation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    statement = models.TextField()
+    iin = models.CharField()
+    policy_number = models.CharField()
+    medical_documents = models.URLField()
+    confirmed = models.BooleanField(default=False)
 
 
 # class Message(models.Model):

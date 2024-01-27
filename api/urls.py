@@ -1,6 +1,9 @@
 from django.urls import include, path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from api.views.chat import MessageAPIView, ChatLastMessageAPIView
+
+from api.views.compensation import ApplicationCompensationListCreateView
 from api.views.gpt import GPTChatAPIView
 from api.views.confirmation import (
     SendEmailAPIView,
@@ -27,5 +30,9 @@ urlpatterns = [
     path("register/", UserCreateAPIView.as_view()),
     path("profile/", UserProfileUpdateAPIView.as_view()),
     path("profile/password/", UserPasswordEditAPIView.as_view()),
-]
 
+    path("chat/", MessageAPIView.as_view()),
+    path("chat/answer/<str:run_id>/", ChatLastMessageAPIView.as_view()),
+
+    path("compensation/", ApplicationCompensationListCreateView.as_view()),
+]

@@ -19,8 +19,14 @@ from dotenv import load_dotenv
 load_dotenv(".env")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_ASS_ID = os.getenv("OPENAI_ASS_ID")
+openai.api_key = OPENAI_API_KEY
+OPENAI_CHAT_HEADERS = {
+    'Content-Type': 'application/json',
+    'Authorization': f'Bearer {OPENAI_API_KEY}',
+    'OpenAI-Beta': 'assistants=v1'
+}
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
