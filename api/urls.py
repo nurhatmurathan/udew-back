@@ -27,7 +27,7 @@ urlpatterns = [
     path("profile/", UserProfileUpdateAPIView.as_view()),
     path("profile/password/", UserPasswordEditAPIView.as_view()),
 
+    path("chat/", ChatAPIView.as_view()),
     path("chat/message/", MessageAPIView.as_view()),
     path("chat/message/<str:run_id>/", MessageAPIView.as_view()),
-    path("chat/", ChatAPIView.as_view()),
 ]
