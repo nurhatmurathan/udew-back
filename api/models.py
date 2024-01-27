@@ -36,9 +36,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_email_confirmed = models.BooleanField(default=False)
     email_confirm_date = models.DateTimeField(null=True, blank=True)
-    phone_number_confirm_date = models.DateTimeField(null=True, blank=True)
     confirmation_token = models.OneToOneField(Token, null=True, blank=True, on_delete=models.SET_NULL)
-    confirmation_code = models.OneToOneField(Code, null=True, blank=True, on_delete=models.SET_NULL)
 
 
 class MultilingualText(models.Model):

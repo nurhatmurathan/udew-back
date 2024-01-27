@@ -1,20 +1,24 @@
+import http.client
+import requests
 import uuid
+import json
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import NotFound, ValidationError
-
-from django.template.loader import render_to_string
-from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils import timezone
+from rest_framework import status
+from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from api.models import Profile, Token
+from api.models import Profile, Token, Code
+from api.serializers.confirmation import PhoneNumberSerializer
+from api.utils import generate_digit_code
 
 
 class SendEmailAPIView(APIView):
@@ -131,7 +135,107 @@ class ConfirmEmailAPIView(APIView):
         if profile.confirmation_token:
             profile.confirmation_token.delete()
 
+
 # class SendCodeAPIView(APIView):
-
-
-
+#     def post(self, request):
+#         try:
+#             print("Step 1")
+#             phone_number = self._phone_number_serializer(request.data)
+#             print("Step 2")
+#             code = self._generate_code()
+#
+#             print("Step 3")
+#             self._send_whatsapp_message(phone_number, code.code)
+#             print("Step 4")
+#             return Response({'message': 'Confirmation link sent to your WhatsApp number.'}, status=status.HTTP_200_OK)
+#         except Exception as exception:
+#             return Response({'meesages': str(exception)}, status=status.HTTP_400_BAD_REQUEST)
+#
+#     def _phone_number_serializer(self, data):
+#         serializer = PhoneNumberSerializer(data=data)
+#         serializer.is_valid(raise_exception=True)
+#
+#         return serializer.validated_data['phone_number']
+#
+#     def _generate_code(self):
+#         code = generate_digit_code()
+#         while Code.objects.filter(code=code).exists():
+#             code = generate_digit_code()
+#
+#         return Code.objects.create(code=code)
+#
+#     def _send_whatsapp_message(self, recipient, placeholder):
+#         # connection = http.client.HTTPSConnection(settings.WHATSAPP_API_BASE_URL)
+#         #
+#         # print(placeholder, " ", recipient)
+#         # print(connection)
+#         # print(settings.WHATSAPP_MESSAGE_ID)
+#         # print(settings.WHATSAPP_MESSAGE_API)
+#         # print(settings.WHATSAPP_TEST_SENDER)
+#         # print(settings.WHATSAPP_API_BASE_URL)
+#         # print(settings.WHATSAPP_TEST_SENDER_URL)
+#         #
+#         # payload = json.dumps({
+#         #     "messages": [
+#         #         {
+#         #             "from": settings.WHATSAPP_TEST_SENDER,
+#         #             "to": recipient,
+#         #             "messageId": settings.WHATSAPP_MESSAGE_ID,
+#         #             "content": {
+#         #                 "templateName": "welcome_messages",
+#         #                 "templateData": {
+#         #                     "body": {
+#         #                         "placeholders": [placeholder]
+#         #                     }
+#         #                 },
+#         #                 "language": "en"
+#         #             }
+#         #         }
+#         #     ]
+#         # })
+#         # headers = {
+#         #     'Authorization': f'App {settings.WHATSAPP_MESSAGE_API}',
+#         #     'Content-Type': 'application/json',
+#         #     'Accept': 'application/json'
+#         # }
+#         #
+#         # connection.request("POST", settings.WHATSAPP_TEST_SENDER_URL, payload, headers)
+#         # res = connection.getresponse()
+#         # data = res.read()
+#         # print(data.decode("utf-8"))
+#
+#         BASE_URL = "https://y3xle1.api.infobip.com"
+#         API_KEY = "App e4f6cd18f0f72c13cbeb4fc59c592f6c-2a8404db-78c8-4ef6-ab40-23762e8e9ae5"
+#
+#         SENDER = "447860099299"
+#         RECIPIENT = "77003929771"
+#
+#         print(recipient)
+#         payload = {
+#             "messages":
+#                 [
+#                     {
+#                         "from": SENDER,
+#                         "to": recipient,
+#                         "content": {
+#                             "templateName": "message_test",
+#                             "templateData": {
+#                                 "body": {
+#                                     "placeholders": [placeholder]
+#                                 }
+#                             },
+#                             "language": "en"
+#                         }
+#                     }
+#                 ]
+#         }
+#
+#         headers = {
+#             'Authorization': API_KEY,
+#             'Content-Type': 'application/json',
+#             'Accept': 'application/json'
+#         }
+#
+#         response = requests.post(BASE_URL + "/whatsapp/1/message/template", json=payload, headers=headers)
+#
+#         print(response.json())

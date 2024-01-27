@@ -22,6 +22,8 @@ urlpatterns = [
     path('pre-email-confirmation/', SendEmailAPIView.as_view()),
     path('confirm-email/', ConfirmEmailAPIView.as_view()),
 
+    # path('pre-phone-number-confirmation', SendCodeAPIView.as_view()),
+
     path("register/", UserCreateAPIView.as_view()),
     path("profile/", UserProfileUpdateAPIView.as_view()),
     path("profile/password/", UserPasswordEditAPIView.as_view()),
