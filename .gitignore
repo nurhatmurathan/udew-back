@@ -13,7 +13,7 @@ db.sqlite3
 
 # Media files
 /media/
-
+ex.py
 # Virtual environment
 venv/
 .venv/
