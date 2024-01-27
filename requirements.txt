@@ -53,4 +53,4 @@ types-pytz==2023.3.1.1
 types-PyYAML==6.0.12.12
 typing_extensions==4.8.0
 tzdata==2023.3
-urllib3==2.1.0
+urllib3==1.26.18
