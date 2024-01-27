@@ -19,7 +19,7 @@ class MessageAPIView(APIView):
 
         chat = get_chat(thread_id)
 
-        return Response(data=chat)
+        return Response(data=reversed(chat))
 
     def post(self, request, format=None):
         profile = get_object_or_404(Profile, user=request.user)
