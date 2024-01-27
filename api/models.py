@@ -39,6 +39,7 @@ class Profile(models.Model):
     phone_number_confirm_date = models.DateTimeField(null=True, blank=True)
     confirmation_token = models.OneToOneField(Token, null=True, blank=True, on_delete=models.SET_NULL)
     confirmation_code = models.OneToOneField(Code, null=True, blank=True, on_delete=models.SET_NULL)
+    chat_thread_id = models.CharField(null=True)
 
 
 class MultilingualText(models.Model):
