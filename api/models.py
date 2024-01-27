@@ -55,6 +55,15 @@ class ImageUrls(models.Model):
     mobile = models.URLField(max_length=200)
 
 
+class ApplicationCompensation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    statement = models.TextField()
+    iin = models.CharField()
+    policy_number = models.CharField()
+    medical_documents = models.URLField()
+    confirmed = models.BooleanField(default=False)
+
+
 # class Message(models.Model):
 #     role = models.CharField(max_length=255)
 #     content = models.TextField()
