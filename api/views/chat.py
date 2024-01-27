@@ -13,24 +13,13 @@ from api.chat_service import *
 class MessageAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, run_id, format=None):
+    def get(self, request, format=None):
         profile = get_object_or_404(Profile, user=request.user)
         thread_id = profile.chat_thread_id
 
-        url = f"https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}"
-
-        response = requests.get(url, headers=OPENAI_CHAT_HEADERS)
-        print(response.text)
-        data = response.json()
-        data_status = data.get("status")
-
-        if data_status != "completed":
-            return Response(data={"status": data_status})
-
         chat = get_chat(thread_id)
 
-        return Response(data={"status": data_status,
-                              "answer": chat[0]})
+        return Response(data=chat)
 
     def post(self, request, format=None):
         profile = get_object_or_404(Profile, user=request.user)
@@ -55,13 +44,24 @@ class MessageAPIView(APIView):
         return Response(data={"run_id": run_id})
 
 
-class ChatAPIView(APIView):
+class ChatLastMessageAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, format=None):
+    def get(self, request, run_id, format=None):
         profile = get_object_or_404(Profile, user=request.user)
         thread_id = profile.chat_thread_id
 
+        url = f"https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}"
+
+        response = requests.get(url, headers=OPENAI_CHAT_HEADERS)
+        print(response.text)
+        data = response.json()
+        data_status = data.get("status")
+
+        if data_status != "completed":
+            return Response(data={"status": data_status})
+
         chat = get_chat(thread_id)
 
-        return Response(data=chat)
+        return Response(data={"status": data_status,
+                              "answer": chat[0]})
