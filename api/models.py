@@ -34,6 +34,7 @@ class Code(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(default=None)
     is_email_confirmed = models.BooleanField(default=False)
     email_confirm_date = models.DateTimeField(null=True, blank=True)
     confirmation_token = models.OneToOneField(Token, null=True, blank=True, on_delete=models.SET_NULL)
