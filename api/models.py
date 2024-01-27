@@ -35,4 +35,21 @@ class ImageUrls(models.Model):
     preview = models.URLField(max_length=200)
     pc = models.URLField(max_length=200)
     tablet = models.URLField(max_length=200)
-    modile = models.URLField(max_length=200)
+    mobile = models.URLField(max_length=200)
+
+
+class Message(models.Model):
+    role = models.CharField(max_length=255)
+    content = models.TextField()
+    time = models.BigIntegerField()
+    status = models.BooleanField(default=False)
+
+
+class Chat(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    messages = models.ManyToManyField(Message)
+
+
+# class ChatImages(models.Model):
+#     image = models.CharField(max_length=)

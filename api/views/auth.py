@@ -1,5 +1,6 @@
 import uuid
 
+from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.views import APIView
@@ -14,6 +15,7 @@ from django.contrib.auth.models import User
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils import timezone
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.serializers.auth import UserCreateSerializer, UserSerializer, UserPasswordEditSerializer
 from api.models import Profile, Token
@@ -47,7 +49,6 @@ class SendEmailAPIView(APIView):
             return profile.confirmation_token
 
         if profile.confirmation_token:
-            print("Here")
             profile.confirmation_token.delete()
 
         token = self._generate_unique_token()
@@ -118,7 +119,6 @@ class ConfirmEmailAPIView(APIView):
             if token.is_expired():
                 raise ValidationError("Token is expired.")
 
-            print(profile.confirmation_token.token)
             if profile.confirmation_token.token != token.token:
                 raise ValidationError("Your token doesn't match the user's token.")
 
