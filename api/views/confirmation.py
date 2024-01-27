@@ -1,7 +1,4 @@
-import http.client
-import requests
 import uuid
-import json
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -10,6 +7,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+
 from rest_framework import status
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import IsAuthenticated
