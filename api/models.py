@@ -34,7 +34,17 @@ class Code(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone_number = models.CharField(default=None)
+    phone_number = models.CharField(default=None, null=True, blank=True)
+
+    age = models.IntegerField(null=True, blank=True)
+    children = models.IntegerField(null=True, blank=True)
+    gender = models.CharField(max_length=55, null=True, blank=True)
+    body_mass_index = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    smoker = models.CharField(max_length=10, null=True, blank=True)
+    region = models.CharField(max_length=20, null=True, blank=True)
+    charges = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    iin = models.CharField(max_length=11, unique=True, null=True, blank=True)
+
     is_email_confirmed = models.BooleanField(default=False)
     email_confirm_date = models.DateTimeField(null=True, blank=True)
     confirmation_token = models.OneToOneField(Token, null=True, blank=True, on_delete=models.SET_NULL)

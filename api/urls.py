@@ -11,7 +11,7 @@ from api.views.confirmation import (
 )
 from api.views.user import (
     UserCreateAPIView,
-    UserProfileUpdateAPIView,
+    UserProfileRetrieveUpdateAPIView,
     UserPasswordEditAPIView
 )
 
@@ -31,7 +31,7 @@ urlpatterns = [
     # path('pre-phone-number-confirmation', SendCodeAPIView.as_view()),
 
     path("register/", UserCreateAPIView.as_view()),
-    path("profile/", UserProfileUpdateAPIView.as_view()),
+    path("profile/", UserProfileRetrieveUpdateAPIView.as_view()),
     path("profile/password/", UserPasswordEditAPIView.as_view()),
 
     path("chat/", MessageAPIView.as_view()),
