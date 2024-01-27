@@ -15,6 +15,9 @@ from api.views.user import (
     UserPasswordEditAPIView
 )
 
+from api.views.ministry_of_health_api import DataSetOfInsuranceCards
+
+
 urlpatterns = [
     path('rest/', include('rest_framework.urls')),
 
@@ -36,4 +39,7 @@ urlpatterns = [
     path("chat/answer/<str:run_id>/", ChatLastMessageAPIView.as_view()),
 
     path("compensation/", ApplicationCompensationListCreateView.as_view()),
+
+    path('insurance-cards/', DataSetOfInsuranceCards.as_view()),
+    path('insurance-cards/<str:iin>/', DataSetOfInsuranceCards.as_view()),
 ]
