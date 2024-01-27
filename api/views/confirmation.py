@@ -1,23 +1,19 @@
 import uuid
 
-from django.shortcuts import redirect
-from django.template.loader import render_to_string
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound, ValidationError
 
+from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils import timezone
-from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.serializers.auth import UserCreateSerializer, UserSerializer, UserPasswordEditSerializer
 from api.models import Profile, Token
 
 
@@ -79,6 +75,8 @@ class SendEmailAPIView(APIView):
 
 
 class ConfirmEmailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             uid, token = self._get_uid_and_token_from_query_params(request)
@@ -130,25 +128,10 @@ class ConfirmEmailAPIView(APIView):
         profile.email_confirm_date = timezone.now()
         profile.save()
 
+        if profile.confirmation_token:
+            profile.confirmation_token.delete()
 
-class UserCreateAPIView(CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserCreateSerializer
-
-
-class UserProfileUpdateAPIView(RetrieveUpdateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_object(self):
-        return self.request.user
+# class SendCodeAPIView(APIView):
 
 
-class UserPasswordEditAPIView(UpdateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserPasswordEditSerializer
-    permission_classes = (IsAuthenticated,)
 
-    def get_object(self):
-        return self.request.user
