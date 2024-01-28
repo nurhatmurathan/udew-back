@@ -1,9 +1,10 @@
 from django.urls import include, path
+from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from api.views.chat import MessageAPIView, ChatLastMessageAPIView, DefaultMessageAPIView
 
-from api.views.compensation import ApplicationCompensationListCreateView
+from api.views.compensation import ApplicationCompensationListCreateView, ApplicationCompensationAdminViewSet
 from api.views.gpt import GPTChatAPIView
 from api.views.confirmation import (
     SendEmailAPIView,
@@ -16,6 +17,9 @@ from api.views.user import (
 )
 
 from api.views.ministry_of_health_api import DataSetOfInsuranceCards
+
+router_compensation_admin = SimpleRouter()
+router_compensation_admin.register(r"compensation/admin", ApplicationCompensationAdminViewSet)
 
 
 urlpatterns = [
@@ -39,6 +43,7 @@ urlpatterns = [
     path("chat/answer/<str:run_id>/", ChatLastMessageAPIView.as_view()),
 
     path("compensation/", ApplicationCompensationListCreateView.as_view()),
+    path("", include(router_compensation_admin.urls)),
 
     path('insurance-cards/', DataSetOfInsuranceCards.as_view()),
     path('insurance-cards/<str:iin>/', DataSetOfInsuranceCards.as_view()),
