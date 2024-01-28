@@ -21,4 +21,4 @@ class ApplicationCompensationAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ApplicationCompensation
-        fields = ["id", "statement", "iin", "policy_number", "medical_documents", "confirmed"]
+        fields = ["id", "statement", "iin", "policy_number", "medical_documents", "status"]

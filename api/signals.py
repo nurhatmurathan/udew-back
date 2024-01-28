@@ -14,6 +14,7 @@ def send_status_email(sender, instance, created, **kwargs):
 
         subject = "Application Status Update"
         message = render_to_string('email_template.html', {
+            'username': instance.user.first_name,
             'policy_number': instance.policy_number,
             'status': instance.status,
             'current_year': datetime.now().year

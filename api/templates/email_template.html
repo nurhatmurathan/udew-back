@@ -33,14 +33,13 @@
 <body>
     <div class="email-container">
         <div class="header">
-            Application Status
+            Insurance Status - Halyk Life
         </div>
         <div class="body">
-            <p>Dear Applicant,</p>
+            <p>Dear {{ username }},</p>
             <p>Your application with policy number <strong>{{ policy_number }}</strong> has been <strong>{{ status }}</strong>.</p>
             <p>If you have any questions or need further information, please do not hesitate to contact us.</p>
-            <p>Best regards,</p>
-            <p>Your Insurance Team</p>
+            <p>Best regards, Your Halyk Life</p>
         </div>
         <div class="footer">
             &copy; {{ current_year }} Your Insurance Company. All rights reserved.

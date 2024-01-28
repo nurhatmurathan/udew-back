@@ -2,6 +2,11 @@ from django.contrib.auth.models import User
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.exceptions import NotFound
+
 from api.serializers.user import (
     UserCreateSerializer,
     UserUpdateSerializer,
@@ -10,9 +15,25 @@ from api.serializers.user import (
 )
 
 
-class UserCreateAPIView(CreateAPIView):
+class UserCreateAPIView(APIView):
     queryset = User.objects.all()
     serializer_class = UserCreateSerializer
+
+    def post(self, request):
+        try:
+            data = request.data
+            profile = self._pop_profile_from_data(data)
+
+
+        except Exception as exception:
+            return Response({'message': str(exception)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def _pop_profile_from_data(self, data):
+        if 'profile' not in data:
+            raise NotFound("'profile' information is required.")
+
+
 
 
 class UserProfileRetrieveUpdateAPIView(RetrieveUpdateAPIView):
