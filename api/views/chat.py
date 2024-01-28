@@ -66,7 +66,7 @@ class ChatLastMessageAPIView(APIView):
         if run_id in OPENAI_ANSWERS:
             Message.objects.create(user=request.user, role="assistant", content=OPENAI_ANSWERS[run_id])
             return Response(data={"status": "completed",
-                                  "answer": OPENAI_ANSWERS[run_id]})
+                                  "answer": {"role": "assistant", "content": OPENAI_ANSWERS[run_id]}})
 
         url = f"https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}"
 
