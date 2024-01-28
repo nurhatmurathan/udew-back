@@ -22,7 +22,6 @@ class DataSetOfInsuranceCards(APIView):
 
     def _make_request(self, url, headers):
         global response
-
         try:
 
             response = requests.get(url, headers=headers)

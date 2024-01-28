@@ -28,7 +28,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
-    profile = ProfileCreateSerializer(partial=True)
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
@@ -43,14 +42,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["username", "email", "first_name", "last_name", "password", "profile"]
+        fields = ["username", "email", "first_name", "last_name", "password"]
 
     def create(self, validated_data):
-        print("Step 1")
-        profile_data = validated_data.get('profile', {})
-        print(profile_data)
-
-        print("Step 2")
         user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
@@ -58,44 +52,13 @@ class UserCreateSerializer(serializers.ModelSerializer):
             last_name=validated_data['last_name'],
         )
 
-        print("Step 3")
         chat_thread_id = create_chat_thread()
-        print("Step 4")
-        Profile.objects.create(user=user, chat_thread_id=chat_thread_id, **profile_data)
+        Profile.objects.create(user=user, chat_thread_id=chat_thread_id)
 
         user.set_password(validated_data['password'])
         user.save()
 
-        print("Step 5")
         return user
-
-    def to_representation(self, instance):
-        print("Step in 'to_representation'")
-
-        representation = super().to_representation(instance)
-        profile = representation.pop("profile")
-        representation.update(profile)
-        return representation
-
-    def to_internal_value(self, data):
-        mutable_data = data.copy()
-
-        print("Step in 'to_internal_value'")
-
-        profile = {
-            'phone_number': mutable_data.pop('phone_number', None),
-            'iin': mutable_data.pop('iin', None),
-            'charges': mutable_data.pop('charges', None),
-            'region': mutable_data.pop('region', None),
-            'smoker': mutable_data.pop('smoker', None),
-            'body_mass_index': mutable_data.pop('body_mass_index', None),
-            'gender': mutable_data.pop('gender', None),
-            'children': mutable_data.pop('children', None),
-            'age': mutable_data.pop('age', None),
-        }
-
-        mutable_data['profile'] = profile
-        return super().to_internal_value(mutable_data)
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
