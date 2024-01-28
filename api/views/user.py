@@ -28,13 +28,12 @@ class UserCreateAPIView(APIView):
     @transaction.atomic
     def post(self, request):
         try:
-            data = request.data
-            profile_data = self._pop_profile_from_data(data)
+            user_data = request.data
 
-            user, user_serializer = self._user_serializer(data)
+            user, user_serializer = self._user_serializer(user_data)
             data_from_government_about_user = self._get_data_from_government_about_user()
 
-            profile_data = self._data_mapping(profile_data, data_from_government_about_user)
+            profile_data = self._data_mapping(data_from_government_about_user)
             profile, profile_serializer = self._profile_serializer(profile_data, user)
 
             response_data = {
@@ -53,16 +52,17 @@ class UserCreateAPIView(APIView):
         instance = serializer.save()
         return instance, serializer
 
-    def _data_mapping(self, target, source):
-        target['charges'] = source['charges']
-        target['gender'] = source['sex']
-        target['region'] = source['region']
-        target['smoker'] = source['smoker']
-        target['body_mass_index'] = source['bmi']
-        target['age'] = source['age']
-        target['children'] = source['children']
-
-        return target
+    def _data_mapping(self, source):
+        return {
+            'charges': source['charges'],
+            'region': source['region'],
+            'gender':  source['sex'],
+            'smoker': source['smoker'],
+            'children': source['children'],
+            'age': source['age'],
+            'body_mass_index': source['bmi'],
+            'iin': source['iin']
+        }
 
     def _user_serializer(self, data):
         serializer = UserCreateSerializer(data=data)
@@ -71,12 +71,6 @@ class UserCreateAPIView(APIView):
         instance = serializer.save()
         return instance, serializer
 
-
-    def _pop_profile_from_data(self, data):
-        if 'profile' not in data:
-            raise NotFound("'profile' information is required.")
-
-        return data.pop('profile')
 
     def _get_data_from_government_about_user(self):
         headers = self._get_headers()
