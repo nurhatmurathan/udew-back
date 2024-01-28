@@ -63,20 +63,25 @@ class ImageUrls(models.Model):
 
 
 class ApplicationCompensation(models.Model):
+    class Status(models.TextChoices):
+        APPROVED = "APPROVED", "approved"
+        NOT_APPROVED = "NOT_APPROVED", "not approved"
+        NOT_CONSIDERED = "NOT_CONSIDERED", "not considered"
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     statement = models.TextField()
     iin = models.CharField()
-    policy_number = models.CharField(default=None, null=True)
+    policy_number = models.CharField(default=None, null=True, blank=True)
     medical_documents = models.URLField()
-    confirmed = models.BooleanField(default=False)
+    status = models.CharField(max_length=25, choices=Status.choices, default=Status.NOT_CONSIDERED)
 
 
 class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=255)
     content = models.TextField()
-#
-#
+
+
 # class Chat(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)
 #     name = models.CharField(max_length=255)

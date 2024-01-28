@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        .email-container {
+            max-width: 600px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .body {
+            padding: 20px;
+            color: #333333;
+        }
+
+        .footer {
+            background-color: #f2f2f2;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            Application Status
+        </div>
+        <div class="body">
+            <p>Dear Applicant,</p>
+            <p>Your application with policy number <strong>{{ policy_number }}</strong> has been <strong>{{ status }}</strong>.</p>
+            <p>If you have any questions or need further information, please do not hesitate to contact us.</p>
+            <p>Best regards,</p>
+            <p>Your Insurance Team</p>
+        </div>
+        <div class="footer">
+            &copy; {{ current_year }} Your Insurance Company. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>
